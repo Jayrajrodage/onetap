@@ -11,23 +11,27 @@ import {
   ListboxItem,
   Input,
 } from "@heroui/react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import data from "@/utils/data.json";
+import { profileFilter } from "@/types";
 
 interface ProfileModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
+  setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({
   isOpen,
   onOpenChange,
+  setFilter,
 }) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
   );
+
   const [search, setSearch] = React.useState("");
   const debouncedSearch = useDebounce(search, 500);
 
@@ -38,7 +42,16 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   }, [debouncedSearch]);
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() =>
+        setFilter((prev) => ({
+          ...prev,
+          profiles: Array.from(selectedKeys),
+        }))
+      }
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>

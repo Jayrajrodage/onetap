@@ -1,17 +1,38 @@
 import { Card, CardBody, CardHeader } from "@heroui/react";
+import React, { useMemo } from "react";
 
-const SummaryCards = ({
-  totalProfiles = 0,
-  totalLists = 0,
-  totalCheckIns = 0,
-  avgCheckInsPerDay = 0,
-}) => {
-  const metrics = [
-    { title: "Total Profiles", value: totalProfiles },
-    { title: "Total Lists", value: totalLists },
-    { title: "Total Check-ins", value: totalCheckIns },
-    { title: "Avg Check-ins", value: avgCheckInsPerDay },
-  ];
+import { profile, typeLists } from "@/types";
+
+interface SummaryCardsProps {
+  profiles: profile[];
+  lists: typeLists[];
+}
+
+const SummaryCards: React.FC<SummaryCardsProps> = ({ profiles, lists }) => {
+  const metrics = useMemo(() => {
+    // ✅ Total check-ins
+    const totalCheckIns = lists.reduce((sum, list) => {
+      const count = list.profiles.filter((p: any) => {
+        return p.checkIn;
+      }).length;
+
+      return sum + count;
+    }, 0);
+
+    // ✅ Total check-outs
+    const totalCheckOuts = lists.reduce((sum, list) => {
+      const count = list.profiles.filter((p: any) => p.checkOut).length;
+
+      return sum + count;
+    }, 0);
+
+    return [
+      { title: "Total Profiles", value: profiles.length },
+      { title: "Total Lists", value: lists.length },
+      { title: "Total Check-ins", value: totalCheckIns },
+      { title: "Total Check-outs", value: totalCheckOuts },
+    ];
+  }, [profiles, lists]);
 
   return (
     <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">

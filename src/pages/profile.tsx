@@ -1,58 +1,73 @@
+import { useState, useMemo } from "react";
+import { today, getLocalTimeZone } from "@internationalized/date";
+
 import Charts from "@/components/charts";
 import SummaryCards from "@/components/summaryCards";
 import HistoryTable from "@/components/table";
 import DefaultLayout from "@/layouts/default";
 import Navbar from "@/components/filterBar";
-const checkinTrend = [
-  { date: "2025-07-17", checkIns: 20 },
-  { date: "2025-07-18", checkIns: 34 },
-  { date: "2025-07-19", checkIns: 28 },
-  { date: "2025-07-20", checkIns: 40 },
-  { date: "2025-07-21", checkIns: 22 },
-  { date: "2025-07-22", checkIns: 18 },
-  { date: "2025-07-23", checkIns: 30 },
-  { date: "2025-07-24", checkIns: 25 },
-  { date: "2025-07-25", checkIns: 36 },
-  { date: "2025-07-26", checkIns: 27 },
-  { date: "2025-07-27", checkIns: 31 },
-  { date: "2025-07-28", checkIns: 42 },
-  { date: "2025-07-29", checkIns: 38 },
-  { date: "2025-07-30", checkIns: 24 },
-  { date: "2025-07-31", checkIns: 29 },
-  { date: "2025-08-01", checkIns: 33 },
-  { date: "2025-08-02", checkIns: 19 },
-  { date: "2025-08-03", checkIns: 45 },
-  { date: "2025-08-04", checkIns: 37 },
-  { date: "2025-08-05", checkIns: 41 },
-  { date: "2025-08-06", checkIns: 26 },
-  { date: "2025-08-07", checkIns: 32 },
-  { date: "2025-08-08", checkIns: 39 },
-  { date: "2025-08-09", checkIns: 35 },
-  { date: "2025-08-10", checkIns: 28 },
-  { date: "2025-08-11", checkIns: 30 },
-  { date: "2025-08-12", checkIns: 34 },
-  { date: "2025-08-13", checkIns: 43 },
-  { date: "2025-08-14", checkIns: 21 },
-  { date: "2025-08-15", checkIns: 27 },
-  { date: "2025-08-16", checkIns: 40 },
-];
+import { profileFilter, typeLists } from "@/types";
+import { profiles, lists } from "@/utils/data.json";
 
 export default function Profile() {
+  const [filter, setFilter] = useState<profileFilter>({
+    profiles: [],
+    lists: [],
+    view: "day",
+    dateRange: {
+      start: today(getLocalTimeZone()).subtract({ days: 31 }),
+      end: today(getLocalTimeZone()),
+    },
+  });
+
+  // ✅ Helper: check if a date is in range
+  const isInRange = (date: string | Date | null | undefined) => {
+    if (!date || !filter.dateRange) return false;
+    const d = new Date(date);
+
+    return (
+      d >= new Date(filter.dateRange.start.toString()) &&
+      d <= new Date(filter.dateRange.end.toString())
+    );
+  };
+
+  // ✅ Apply profile filter
+  const filteredProfiles = useMemo(() => {
+    return filter.profiles.length > 0
+      ? profiles.filter((p) => filter.profiles.includes(p.id.toString()))
+      : profiles;
+  }, [filter]);
+
+  // ✅ Apply profile filter to lists too
+  const filteredLists = useMemo(() => {
+    return lists.reduce((acc: typeLists[], list) => {
+      const filteredProfiles =
+        filter.profiles.length > 0
+          ? list.profiles.filter((p: any) =>
+              filter.profiles.includes(p.profileId.toString())
+            )
+          : list.profiles;
+
+      // ✅ only push the list if it has profiles left
+      if (filteredProfiles.length > 0) {
+        if (isInRange(list.date)) {
+          acc.push({
+            ...list,
+            profiles: filteredProfiles,
+          });
+        }
+      }
+
+      return acc;
+    }, []);
+  }, [filter]);
+
   return (
     <DefaultLayout>
       <div className="flex flex-col gap-5">
-        <Navbar />
-        <SummaryCards />
-        <Charts
-          checkinTrend={checkinTrend}
-          eventStats={[
-            { event: "Event A", profiles: 50, checkIns: 40, checkOuts: 30 },
-            { event: "Event B", profiles: 30, checkIns: 25, checkOuts: 20 },
-            { event: "Event C", profiles: 45, checkIns: 38, checkOuts: 33 },
-            { event: "Event D", profiles: 60, checkIns: 55, checkOuts: 48 },
-            { event: "Event E", profiles: 25, checkIns: 20, checkOuts: 18 },
-          ]}
-        />
+        <Navbar filter={filter} setFilter={setFilter} />
+        <SummaryCards lists={filteredLists} profiles={filteredProfiles} />
+        <Charts lists={filteredLists} />
         <HistoryTable />
       </div>
     </DefaultLayout>

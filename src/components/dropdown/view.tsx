@@ -1,5 +1,3 @@
-import type { Selection } from "@react-types/shared";
-
 import {
   Dropdown,
   DropdownItem,
@@ -9,30 +7,35 @@ import {
 import React from "react";
 import { Button } from "@heroui/button";
 
-const View = () => {
-  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-    new Set(["day"])
-  );
+import { profileFilter, view } from "@/types";
 
-  const selectedValue = React.useMemo(
-    () => Array.from(selectedKeys).join(", ").replace(/_/g, ""),
-    [selectedKeys]
-  );
+interface viewProps {
+  filter: profileFilter;
+  setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
+}
 
+const View: React.FC<viewProps> = ({ filter, setFilter }) => {
   return (
     <Dropdown>
       <DropdownTrigger>
         <Button className="capitalize" size="sm" variant={"bordered"}>
-          {selectedValue}
+          {filter.view}
         </Button>
       </DropdownTrigger>
       <DropdownMenu
         disallowEmptySelection
         aria-label="view"
-        selectedKeys={selectedKeys}
+        selectedKeys={new Set([filter.view])}
         selectionMode="single"
         variant="flat"
-        onSelectionChange={setSelectedKeys}
+        onSelectionChange={(keys) => {
+          const view = (Array.from(keys)[0] as view) || "day";
+
+          setFilter((prev) => ({
+            ...prev,
+            view,
+          }));
+        }}
       >
         <DropdownItem key="day">Day</DropdownItem>
         <DropdownItem key="week">Week</DropdownItem>

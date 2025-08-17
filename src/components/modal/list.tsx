@@ -34,11 +34,6 @@ const ListModal: React.FC<ProfileModalProps> = ({ isOpen, onOpenChange }) => {
     );
   }, [debouncedSearch]);
 
-  const selectedValue = React.useMemo(
-    () => Array.from(selectedKeys).join(", "),
-    [selectedKeys]
-  );
-
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>

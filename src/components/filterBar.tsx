@@ -4,7 +4,14 @@ import ProfileModal from "./modal/profile";
 import View from "./dropdown/view";
 import DateRangeModel from "./modal/dateRange";
 
-export default function ProfileNav() {
+import { profileFilter } from "@/types";
+
+interface profileNavProps {
+  setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
+  filter: profileFilter;
+}
+
+export default function ProfileNav({ filter, setFilter }: profileNavProps) {
   const {
     isOpen: isOpenProfile,
     onOpen: onOpenProfile,
@@ -26,14 +33,23 @@ export default function ProfileNav() {
           <Button size="sm" variant={"bordered"} onPress={onOpenProfile}>
             Profile
           </Button>
-          <View />
+          <View filter={filter} setFilter={setFilter} />
           <Button size="sm" variant={"bordered"} onPress={onOpenDate}>
             Dates
           </Button>
         </div>
       </div>
-      <ProfileModal isOpen={isOpenProfile} onOpenChange={onOpenChangeProfile} />
-      <DateRangeModel isOpen={isOpenDate} onOpenChange={onOpenChangeDate} />
+      <ProfileModal
+        isOpen={isOpenProfile}
+        setFilter={setFilter}
+        onOpenChange={onOpenChangeProfile}
+      />
+      <DateRangeModel
+        filter={filter}
+        isOpen={isOpenDate}
+        setFilter={setFilter}
+        onOpenChange={onOpenChangeDate}
+      />
     </nav>
   );
 }
