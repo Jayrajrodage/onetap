@@ -1,0 +1,336 @@
+{
+  "profiles": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice.johnson@school.com",
+      "phone": "+91-9876543201"
+    },
+    {
+      "id": 2,
+      "name": "Bob Smith",
+      "email": "bob.smith@school.com",
+      "phone": "+91-9876543202"
+    },
+    {
+      "id": 3,
+      "name": "Carol Williams",
+      "email": "carol.williams@school.com",
+      "phone": "+91-9876543203"
+    },
+    {
+      "id": 4,
+      "name": "David Brown",
+      "email": "david.brown@school.com",
+      "phone": "+91-9876543204"
+    },
+    {
+      "id": 5,
+      "name": "Eva Davis",
+      "email": "eva.davis@school.com",
+      "phone": "+91-9876543205"
+    },
+    {
+      "id": 6,
+      "name": "Frank Miller",
+      "email": "frank.miller@school.com",
+      "phone": "+91-9876543206"
+    },
+    {
+      "id": 7,
+      "name": "Grace Wilson",
+      "email": "grace.wilson@school.com",
+      "phone": "+91-9876543207"
+    },
+    {
+      "id": 8,
+      "name": "Henry Moore",
+      "email": "henry.moore@school.com",
+      "phone": "+91-9876543208"
+    },
+    {
+      "id": 9,
+      "name": "Ivy Taylor",
+      "email": "ivy.taylor@school.com",
+      "phone": "+91-9876543209"
+    },
+    {
+      "id": 10,
+      "name": "Jack Anderson",
+      "email": "jack.anderson@school.com",
+      "phone": "+91-9876543210"
+    },
+    {
+      "id": 11,
+      "name": "Kathy Thomas",
+      "email": "kathy.thomas@school.com",
+      "phone": "+91-9876543211"
+    },
+    {
+      "id": 12,
+      "name": "Leo Jackson",
+      "email": "leo.jackson@school.com",
+      "phone": "+91-9876543212"
+    },
+    {
+      "id": 13,
+      "name": "Mia White",
+      "email": "mia.white@school.com",
+      "phone": "+91-9876543213"
+    },
+    {
+      "id": 14,
+      "name": "Noah Harris",
+      "email": "noah.harris@school.com",
+      "phone": "+91-9876543214"
+    },
+    {
+      "id": 15,
+      "name": "Olivia Martin",
+      "email": "olivia.martin@school.com",
+      "phone": "+91-9876543215"
+    },
+    {
+      "id": 16,
+      "name": "Paul Thompson",
+      "email": "paul.thompson@school.com",
+      "phone": "+91-9876543216"
+    },
+    {
+      "id": 17,
+      "name": "Quinn Garcia",
+      "email": "quinn.garcia@school.com",
+      "phone": "+91-9876543217"
+    },
+    {
+      "id": 18,
+      "name": "Rachel Martinez",
+      "email": "rachel.martinez@school.com",
+      "phone": "+91-9876543218"
+    },
+    {
+      "id": 19,
+      "name": "Sam Robinson",
+      "email": "sam.robinson@school.com",
+      "phone": "+91-9876543219"
+    },
+    {
+      "id": 20,
+      "name": "Tina Clark",
+      "email": "tina.clark@school.com",
+      "phone": "+91-9876543220"
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "name": "Math Teachers Workshop",
+      "hasCheckout": true,
+      "profiles": [
+        {
+          "profileId": 1,
+          "checkIn": "2025-08-07T08:30:00Z",
+          "checkOut": "2025-08-07T16:00:00Z"
+        },
+        {
+          "profileId": 2,
+          "checkIn": "2025-08-07T08:45:00Z",
+          "checkOut": "2025-08-07T15:55:00Z"
+        },
+        {
+          "profileId": 3,
+          "checkIn": "2025-08-07T09:00:00Z",
+          "checkOut": "2025-08-07T16:10:00Z"
+        },
+        {
+          "profileId": 4,
+          "checkIn": "2025-08-07T08:20:00Z",
+          "checkOut": "2025-08-07T16:05:00Z"
+        },
+        {
+          "profileId": 5,
+          "checkIn": "2025-08-07T08:50:00Z",
+          "checkOut": "2025-08-07T15:50:00Z"
+        },
+        {
+          "profileId": 6,
+          "checkIn": "2025-08-07T08:40:00Z",
+          "checkOut": "2025-08-07T16:15:00Z"
+        },
+        {
+          "profileId": 7,
+          "checkIn": "2025-08-07T09:10:00Z",
+          "checkOut": "2025-08-07T15:45:00Z"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Science Fair Committee",
+      "hasCheckout": false,
+      "profiles": [
+        { "profileId": 8, "checkIn": "2025-08-08T08:20:00Z" },
+        { "profileId": 9, "checkIn": "2025-08-08T08:30:00Z" },
+        { "profileId": 10, "checkIn": "2025-08-08T09:00:00Z" },
+        { "profileId": 11, "checkIn": "2025-08-08T09:10:00Z" },
+        { "profileId": 12, "checkIn": "2025-08-08T08:40:00Z" },
+        { "profileId": 13, "checkIn": "2025-08-08T08:50:00Z" },
+        { "profileId": 14, "checkIn": "2025-08-08T09:05:00Z" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "English Literature Seminar",
+      "hasCheckout": true,
+      "profiles": [
+        {
+          "profileId": 15,
+          "checkIn": "2025-08-09T08:35:00Z",
+          "checkOut": "2025-08-09T15:40:00Z"
+        },
+        {
+          "profileId": 16,
+          "checkIn": "2025-08-09T08:45:00Z",
+          "checkOut": "2025-08-09T15:50:00Z"
+        },
+        {
+          "profileId": 17,
+          "checkIn": "2025-08-09T09:00:00Z",
+          "checkOut": "2025-08-09T15:55:00Z"
+        },
+        {
+          "profileId": 18,
+          "checkIn": "2025-08-09T08:55:00Z",
+          "checkOut": "2025-08-09T16:00:00Z"
+        },
+        {
+          "profileId": 19,
+          "checkIn": "2025-08-09T08:20:00Z",
+          "checkOut": "2025-08-09T16:10:00Z"
+        },
+        {
+          "profileId": 20,
+          "checkIn": "2025-08-09T09:10:00Z",
+          "checkOut": "2025-08-09T16:15:00Z"
+        },
+        {
+          "profileId": 1,
+          "checkIn": "2025-08-09T08:40:00Z",
+          "checkOut": "2025-08-09T15:45:00Z"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Sports Day Organizers",
+      "hasCheckout": false,
+      "profiles": [
+        { "profileId": 2, "checkIn": "2025-08-10T08:25:00Z" },
+        { "profileId": 3, "checkIn": "2025-08-10T08:30:00Z" },
+        { "profileId": 4, "checkIn": "2025-08-10T08:50:00Z" },
+        { "profileId": 5, "checkIn": "2025-08-10T09:00:00Z" },
+        { "profileId": 6, "checkIn": "2025-08-10T09:05:00Z" },
+        { "profileId": 7, "checkIn": "2025-08-10T08:55:00Z" },
+        { "profileId": 8, "checkIn": "2025-08-10T09:15:00Z" }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Art Exhibition Setup",
+      "hasCheckout": true,
+      "profiles": [
+        {
+          "profileId": 9,
+          "checkIn": "2025-08-11T08:35:00Z",
+          "checkOut": "2025-08-11T15:50:00Z"
+        },
+        {
+          "profileId": 10,
+          "checkIn": "2025-08-11T08:45:00Z",
+          "checkOut": "2025-08-11T16:00:00Z"
+        },
+        {
+          "profileId": 11,
+          "checkIn": "2025-08-11T08:55:00Z",
+          "checkOut": "2025-08-11T15:55:00Z"
+        },
+        {
+          "profileId": 12,
+          "checkIn": "2025-08-11T09:05:00Z",
+          "checkOut": "2025-08-11T16:05:00Z"
+        },
+        {
+          "profileId": 13,
+          "checkIn": "2025-08-11T08:25:00Z",
+          "checkOut": "2025-08-11T15:40:00Z"
+        },
+        {
+          "profileId": 14,
+          "checkIn": "2025-08-11T08:50:00Z",
+          "checkOut": "2025-08-11T16:10:00Z"
+        },
+        {
+          "profileId": 15,
+          "checkIn": "2025-08-11T09:10:00Z",
+          "checkOut": "2025-08-11T15:45:00Z"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Parent Teacher Meeting",
+      "hasCheckout": false,
+      "profiles": [
+        { "profileId": 16, "checkIn": "2025-08-12T08:30:00Z" },
+        { "profileId": 17, "checkIn": "2025-08-12T08:40:00Z" },
+        { "profileId": 18, "checkIn": "2025-08-12T08:55:00Z" },
+        { "profileId": 19, "checkIn": "2025-08-12T09:05:00Z" },
+        { "profileId": 20, "checkIn": "2025-08-12T09:15:00Z" },
+        { "profileId": 1, "checkIn": "2025-08-12T08:45:00Z" },
+        { "profileId": 2, "checkIn": "2025-08-12T09:10:00Z" }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Annual Function Volunteers",
+      "hasCheckout": true,
+      "profiles": [
+        {
+          "profileId": 3,
+          "checkIn": "2025-08-13T08:25:00Z",
+          "checkOut": "2025-08-13T16:05:00Z"
+        },
+        {
+          "profileId": 4,
+          "checkIn": "2025-08-13T08:35:00Z",
+          "checkOut": "2025-08-13T15:55:00Z"
+        },
+        {
+          "profileId": 5,
+          "checkIn": "2025-08-13T08:45:00Z",
+          "checkOut": "2025-08-13T15:50:00Z"
+        },
+        {
+          "profileId": 6,
+          "checkIn": "2025-08-13T08:55:00Z",
+          "checkOut": "2025-08-13T16:15:00Z"
+        },
+        {
+          "profileId": 7,
+          "checkIn": "2025-08-13T09:05:00Z",
+          "checkOut": "2025-08-13T16:20:00Z"
+        },
+        {
+          "profileId": 8,
+          "checkIn": "2025-08-13T09:15:00Z",
+          "checkOut": "2025-08-13T16:25:00Z"
+        },
+        {
+          "profileId": 9,
+          "checkIn": "2025-08-13T08:20:00Z",
+          "checkOut": "2025-08-13T15:45:00Z"
+        }
+      ]
+    }
+  ]
+}
