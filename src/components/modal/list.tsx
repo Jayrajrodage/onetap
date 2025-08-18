@@ -14,14 +14,20 @@ import {
 import React from "react";
 
 import { useDebounce } from "@/hooks/useDebounce";
-import data from "@/utils/data.json";
+import { demoLists } from "@/utils/data.json";
+import { listsFilter } from "@/types";
 
-interface ProfileModalProps {
+interface listModelProps {
   isOpen: boolean;
   onOpenChange: () => void;
+  setFilter: React.Dispatch<React.SetStateAction<listsFilter>>;
 }
 
-const ListModal: React.FC<ProfileModalProps> = ({ isOpen, onOpenChange }) => {
+const ListModal: React.FC<listModelProps> = ({
+  isOpen,
+  onOpenChange,
+  setFilter,
+}) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
   );
@@ -29,13 +35,22 @@ const ListModal: React.FC<ProfileModalProps> = ({ isOpen, onOpenChange }) => {
   const debouncedSearch = useDebounce(search, 500);
 
   const filteredLists = React.useMemo(() => {
-    return data.lists.filter((list) =>
+    return demoLists.filter((list) =>
       list.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [debouncedSearch]);
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() =>
+        setFilter((prev) => ({
+          ...prev,
+          lists: Array.from(selectedKeys),
+        }))
+      }
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>

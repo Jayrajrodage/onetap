@@ -1,21 +1,19 @@
 import { Button, useDisclosure } from "@heroui/react";
 
-import ProfileModal from "./modal/profile";
-import View from "./dropdown/view";
 import DateRangeModel from "./modal/dateRange";
+import ListModal from "./modal/list";
 
-import { profileFilter } from "@/types";
+import { listsFilter } from "@/types";
 
-interface profileNavProps {
-  setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
-  filter: profileFilter;
+interface listsFilterProps {
+  setFilter: React.Dispatch<React.SetStateAction<listsFilter>>;
 }
 
-export default function ProfileNav({ filter, setFilter }: profileNavProps) {
+export default function ListsFilter({ setFilter }: listsFilterProps) {
   const {
-    isOpen: isOpenProfile,
-    onOpen: onOpenProfile,
-    onOpenChange: onOpenChangeProfile,
+    isOpen: isOpenLists,
+    onOpen: onOpenLists,
+    onOpenChange: onOpenChangeLists,
   } = useDisclosure();
   const {
     isOpen: isOpenDate,
@@ -27,25 +25,23 @@ export default function ProfileNav({ filter, setFilter }: profileNavProps) {
     <nav>
       <div className="max-w-6xl mx-auto flex flex-wrap gap-5 items-center justify-between">
         <div>
-          <h1>Profile Analytics</h1>
+          <h1>Lists Analytics</h1>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          <Button size="sm" variant={"bordered"} onPress={onOpenProfile}>
-            Profile
+          <Button size="sm" variant={"bordered"} onPress={onOpenLists}>
+            Lists
           </Button>
-          <View filter={filter} setFilter={setFilter} />
           <Button size="sm" variant={"bordered"} onPress={onOpenDate}>
             Dates
           </Button>
         </div>
       </div>
-      <ProfileModal
-        isOpen={isOpenProfile}
+      <ListModal
+        isOpen={isOpenLists}
         setFilter={setFilter}
-        onOpenChange={onOpenChangeProfile}
+        onOpenChange={onOpenChangeLists}
       />
       <DateRangeModel
-        filter={filter}
         isOpen={isOpenDate}
         setFilter={setFilter}
         onOpenChange={onOpenChangeDate}

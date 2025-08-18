@@ -11,36 +11,38 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { CalendarDate } from "@internationalized/date";
 
-import { typeLists } from "@/types";
+import { profileFilter, typeLists } from "@/types";
+import { getDays } from "@/helper/helper";
 
 interface ChartsProps {
   lists: typeLists[];
+  filter: profileFilter;
 }
 
-const Charts: React.FC<ChartsProps> = ({ lists }) => {
-  const last31Days = useMemo(() => {
-    const today = new Date();
-
-    return Array.from({ length: 31 }, (_, i) => {
-      const d = new Date(today);
-
-      d.setDate(today.getDate() - (30 - i));
-
-      return d.toISOString().split("T")[0];
-    });
-  }, []);
+const ProfileCharts: React.FC<ChartsProps> = ({ lists, filter }) => {
+  const Days = useMemo(() => {
+    return getDays(
+      filter.dateRange?.start as CalendarDate,
+      filter.dateRange?.end as CalendarDate
+    );
+  }, [filter.dateRange]);
 
   const checkinTrend = useMemo(() => {
-    return last31Days.map((date) => {
-      const list = lists.find((l) => l.date === date);
+    return Days.map((date) => {
+      const list = lists.find((l) => {
+        return (
+          new Date(l.date).toDateString() === new Date(date).toDateString()
+        );
+      });
 
       return {
         date,
         checkIns: list ? list.profiles.filter((p) => p.checkIn).length : 0,
       };
     });
-  }, [lists, last31Days]);
+  }, [lists, Days]);
 
   const barData = useMemo(() => {
     // Take the last 5 lists (most recent by date)
@@ -48,7 +50,7 @@ const Charts: React.FC<ChartsProps> = ({ lists }) => {
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
 
-    return sortedLists.slice(0, 5).map((list) => ({
+    return sortedLists.slice(0, 6).map((list) => ({
       name: list.name,
       profiles: list.profiles.length,
       checkIns: list.profiles.filter((p) => p.checkIn).length,
@@ -61,20 +63,14 @@ const Charts: React.FC<ChartsProps> = ({ lists }) => {
       {/* Line Chart - Check-in Trend */}
       <div className="bg-white p-2 rounded-2xl shadow">
         <h3 className="text-lg font-semibold mb-4">Check-in Trend</h3>
-        <ResponsiveContainer height={300} width="100%">
+        <ResponsiveContainer className="-ml-7" height={300} width="100%">
           <LineChart data={checkinTrend}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line
-              dataKey="checkIns"
-              dot={{ r: 3 }}
-              stroke="#8884d8"
-              strokeWidth={2}
-              type="monotone"
-            />
+            <Line dataKey="checkIns" dot={{ r: 3 }} strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -82,7 +78,7 @@ const Charts: React.FC<ChartsProps> = ({ lists }) => {
       {/* Bar Chart - Event Stats */}
       <div className="bg-white p-2 rounded-2xl shadow">
         <h3 className="text-lg font-semibold mb-4">List Analytics</h3>
-        <ResponsiveContainer height={300} width="100%">
+        <ResponsiveContainer className="-ml-7" height={300} width="100%">
           <BarChart data={barData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" tick={false} />
@@ -99,4 +95,4 @@ const Charts: React.FC<ChartsProps> = ({ lists }) => {
   );
 };
 
-export default Charts;
+export default ProfileCharts;

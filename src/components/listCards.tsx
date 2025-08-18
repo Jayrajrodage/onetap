@@ -3,12 +3,12 @@ import React, { useMemo } from "react";
 
 import { profile, typeLists } from "@/types";
 
-interface SummaryCardsProps {
+interface listCardsProps {
   profiles: profile[];
   lists: typeLists[];
 }
 
-const SummaryCards: React.FC<SummaryCardsProps> = ({ profiles, lists }) => {
+const ListsCards: React.FC<listCardsProps> = ({ profiles, lists }) => {
   const metrics = useMemo(() => {
     // ✅ Total check-ins
     const totalCheckIns = lists.reduce((sum, list) => {
@@ -27,8 +27,8 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ profiles, lists }) => {
     }, 0);
 
     return [
-      { title: "Total Profiles", value: profiles.length },
       { title: "Total Lists", value: lists.length },
+      { title: "Total Profiles", value: profiles.length },
       { title: "Total Check-ins", value: totalCheckIns },
       { title: "Total Check-outs", value: totalCheckOuts },
     ];
@@ -52,4 +52,4 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ profiles, lists }) => {
   );
 };
 
-export default SummaryCards;
+export default ListsCards;

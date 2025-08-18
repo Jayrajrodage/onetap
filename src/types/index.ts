@@ -10,6 +10,10 @@ export type view = "day" | "week" | "month";
 
 export interface profileFilter {
   profiles: Key[];
+  view: view;
+  dateRange: RangeValue<DateValue> | null;
+}
+export interface listsFilter {
   lists: Key[];
   view: view;
   dateRange: RangeValue<DateValue> | null;

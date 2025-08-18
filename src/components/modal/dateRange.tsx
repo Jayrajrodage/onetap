@@ -6,26 +6,38 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  RangeValue,
 } from "@heroui/react";
-import React from "react";
-
-import { profileFilter } from "@/types";
+import React, { useState } from "react";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 
 interface DateRangeModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
-  filter: profileFilter;
-  setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
+  setFilter: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const DateRangeModel: React.FC<DateRangeModalProps> = ({
   isOpen,
   onOpenChange,
-  filter,
   setFilter,
 }) => {
+  const [dateRange, setdateRange] = useState<RangeValue<CalendarDate> | null>({
+    start: today(getLocalTimeZone()).subtract({ days: 31 }),
+    end: today(getLocalTimeZone()),
+  });
+
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() =>
+        setFilter((prev: any) => ({
+          ...prev,
+          dateRange: dateRange,
+        }))
+      }
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -36,13 +48,8 @@ const DateRangeModel: React.FC<DateRangeModalProps> = ({
               <DateRangePicker
                 aria-label="Date Range"
                 label="Date Range (MM:DD:YY)"
-                value={filter.dateRange}
-                onChange={(value) =>
-                  setFilter((prev) => ({
-                    ...prev,
-                    dateRange: value,
-                  }))
-                }
+                value={dateRange}
+                onChange={setdateRange}
               />
             </ModalBody>
             <ModalFooter>

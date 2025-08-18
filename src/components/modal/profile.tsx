@@ -14,7 +14,7 @@ import {
 import React from "react";
 
 import { useDebounce } from "@/hooks/useDebounce";
-import data from "@/utils/data.json";
+import { demoProfiles } from "@/utils/data.json";
 import { profileFilter } from "@/types";
 
 interface ProfileModalProps {
@@ -36,7 +36,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   const debouncedSearch = useDebounce(search, 500);
 
   const filteredProfiles = React.useMemo(() => {
-    return data.profiles.filter((profile) =>
+    return demoProfiles.filter((profile) =>
       profile.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [debouncedSearch]);
