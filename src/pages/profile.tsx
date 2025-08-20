@@ -1,13 +1,14 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { today, getLocalTimeZone } from "@internationalized/date";
+import { Spinner } from "@heroui/react";
 
 import ProfileCharts from "@/components/profileCharts";
 import DefaultLayout from "@/layouts/default";
 import ProfileFilter from "@/components/profileFilter";
-import { profileFilter, typeLists } from "@/types";
-import { demoLists, demoProfiles } from "@/utils/data.json";
+import { profileFilter } from "@/types";
 import ProfileCards from "@/components/profileCards";
 import ProfileTable from "@/components/profileTable";
+import { useGetParticipants } from "@/hooks/useParticipants";
 
 export default function Profile() {
   const [filter, setFilter] = useState<profileFilter>({
@@ -19,55 +20,45 @@ export default function Profile() {
     },
   });
 
-  // ✅ Helper: check if a date is in range
-  const isInRange = (date: string | Date | null | undefined) => {
-    if (!date || !filter.dateRange) return false;
-    const d = new Date(date);
-
-    return (
-      d >= new Date(filter.dateRange.start.toString()) &&
-      d <= new Date(filter.dateRange.end.toString())
-    );
-  };
-
-  // ✅ Apply profile filter
-  const filteredProfiles = useMemo(() => {
-    return filter.profiles.length > 0
-      ? demoProfiles.filter((p) => filter.profiles.includes(p.id.toString()))
-      : demoProfiles;
-  }, [filter]);
-
-  // ✅ Apply profile filter to lists too
-  const filteredLists = useMemo(() => {
-    return demoLists.reduce((acc: typeLists[], list) => {
-      const filteredProfiles =
-        filter.profiles.length > 0
-          ? list.profiles.filter((p: any) =>
-              filter.profiles.includes(p.profileId.toString())
-            )
-          : list.profiles;
-
-      // ✅ only push the list if it has profiles left
-      if (filteredProfiles.length > 0) {
-        if (isInRange(list.date)) {
-          acc.push({
-            ...list,
-            profiles: filteredProfiles,
-          });
-        }
-      }
-
-      return acc;
-    }, []);
-  }, [filter]);
+  const {
+    data: participantsData,
+    isLoading: participantsLoading,
+    error: participantsError,
+    isFetched: participantsFetched,
+  } = useGetParticipants({
+    profileIds: filter.profiles.map((p) => p.toString()),
+    ltCheckInDate: Math.ceil(
+      (filter.dateRange?.end?.toDate(getLocalTimeZone()).getTime() ?? 0) / 1000
+    ),
+    gtCheckInDate: Math.ceil(
+      (filter.dateRange?.start.toDate(getLocalTimeZone()).getTime() ?? 0) / 1000
+    ),
+  });
 
   return (
     <DefaultLayout>
       <div className="flex flex-col gap-5">
-        <ProfileFilter setFilter={setFilter} />
-        <ProfileCards lists={filteredLists} profiles={filteredProfiles} />
-        <ProfileCharts filter={filter} lists={filteredLists} />
-        <ProfileTable profiles={filter.profiles} />
+        {participantsError ? (
+          <div className="text-center text-red-400">something went wrong!</div>
+        ) : participantsLoading ? (
+          <div className="flex justify-center items-center h-full">
+            <Spinner />
+          </div>
+        ) : (
+          <>
+            {participantsFetched && (
+              <>
+                <ProfileFilter filter={filter} setFilter={setFilter} />
+                <ProfileCards participants={participantsData?.data || []} />
+                <ProfileCharts
+                  filter={filter}
+                  participantsData={participantsData?.data || []}
+                />
+                <ProfileTable participants={participantsData?.data || []} />
+              </>
+            )}
+          </>
+        )}
       </div>
     </DefaultLayout>
   );

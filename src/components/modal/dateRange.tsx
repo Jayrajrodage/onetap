@@ -1,6 +1,7 @@
 import {
   Button,
   DateRangePicker,
+  DateValue,
   Modal,
   ModalBody,
   ModalContent,
@@ -9,22 +10,28 @@ import {
   RangeValue,
 } from "@heroui/react";
 import React, { useState } from "react";
-import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
+
+import { listsFilter, profileFilter } from "@/types";
 
 interface DateRangeModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
   setFilter: React.Dispatch<React.SetStateAction<any>>;
+  filter: profileFilter | listsFilter;
 }
 
 const DateRangeModel: React.FC<DateRangeModalProps> = ({
   isOpen,
   onOpenChange,
   setFilter,
+  filter,
 }) => {
-  const [dateRange, setdateRange] = useState<RangeValue<CalendarDate> | null>({
-    start: today(getLocalTimeZone()).subtract({ days: 31 }),
-    end: today(getLocalTimeZone()),
+  const [dateRange, setdateRange] = useState<RangeValue<DateValue> | null>({
+    start:
+      filter.dateRange?.start ??
+      today(getLocalTimeZone()).subtract({ days: 31 }),
+    end: filter.dateRange?.end ?? today(getLocalTimeZone()),
   });
 
   return (

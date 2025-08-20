@@ -13,15 +13,15 @@ import {
 } from "recharts";
 import { CalendarDate } from "@internationalized/date";
 
-import { profileFilter, typeLists } from "@/types";
+import { participant, profileFilter } from "@/types";
 import { getDays } from "@/helper/helper";
 
 interface ChartsProps {
-  lists: typeLists[];
   filter: profileFilter;
+  participantsData: participant[]; // Adjust type as needed
 }
 
-const ProfileCharts: React.FC<ChartsProps> = ({ lists, filter }) => {
+const ProfileCharts: React.FC<ChartsProps> = ({ filter, participantsData }) => {
   const Days = useMemo(() => {
     return getDays(
       filter.dateRange?.start as CalendarDate,
@@ -31,32 +31,61 @@ const ProfileCharts: React.FC<ChartsProps> = ({ lists, filter }) => {
 
   const checkinTrend = useMemo(() => {
     return Days.map((date) => {
-      const list = lists.find((l) => {
-        return (
-          new Date(l.date).toDateString() === new Date(date).toDateString()
-        );
-      });
+      const dateStr = new Date(date).toDateString();
+      const checkIns = participantsData.filter(
+        (p) =>
+          p.checkedIn &&
+          new Date(p.checkInDate * 1000).toDateString() === dateStr
+      ).length;
 
       return {
         date,
-        checkIns: list ? list.profiles.filter((p) => p.checkIn).length : 0,
+        checkIns,
       };
     });
-  }, [lists, Days]);
+  }, [participantsData, Days]);
 
   const barData = useMemo(() => {
-    // Take the last 5 lists (most recent by date)
-    const sortedLists = [...lists].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    // Group by listId
+    const listMap: Record<
+      string,
+      {
+        name: string;
+        profiles: Set<string>;
+        checkIns: number;
+        checkOuts: number;
+        date: number;
+      }
+    > = {};
 
-    return sortedLists.slice(0, 6).map((list) => ({
+    participantsData.forEach((p) => {
+      if (!listMap[p.listId]) {
+        listMap[p.listId] = {
+          name: p.listName,
+          profiles: new Set(),
+          checkIns: 0,
+          checkOuts: 0,
+          date: p.checkInDate || 0,
+        };
+      }
+
+      listMap[p.listId].profiles.add(p.profileId);
+      if (p.checkedIn) listMap[p.listId].checkIns += 1;
+      if (p.checkedOut) listMap[p.listId].checkOuts += 1;
+      // Use the latest checkInDate as the list date
+      if (p.checkInDate > listMap[p.listId].date) {
+        listMap[p.listId].date = p.checkInDate;
+      }
+    });
+    const listsArr = Object.values(listMap).sort((a, b) => b.date - a.date);
+
+    return listsArr.slice(0, 6).map((list) => ({
       name: list.name,
-      profiles: list.profiles.length,
-      checkIns: list.profiles.filter((p) => p.checkIn).length,
-      checkOuts: list.profiles.filter((p) => p.checkOut).length,
+      profiles: list.profiles.size,
+      checkIns: list.checkIns,
+      checkOuts: list.checkOuts,
     }));
-  }, [lists]);
+  }, [participantsData]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">

@@ -1,4 +1,4 @@
-import type { Selection } from "@react-types/shared";
+import type { Key, Selection } from "@react-types/shared";
 
 import {
   Button,
@@ -10,35 +10,45 @@ import {
   Listbox,
   ListboxItem,
   Input,
+  Pagination,
+  Spinner,
 } from "@heroui/react";
 import React from "react";
 
 import { useDebounce } from "@/hooks/useDebounce";
-import { demoLists } from "@/utils/data.json";
 import { listsFilter } from "@/types";
+import { useGetLists } from "@/hooks/useLists";
 
 interface listModelProps {
   isOpen: boolean;
   onOpenChange: () => void;
   setFilter: React.Dispatch<React.SetStateAction<listsFilter>>;
+  selectedLists: Key[];
 }
 
 const ListModal: React.FC<listModelProps> = ({
   isOpen,
   onOpenChange,
   setFilter,
+  selectedLists,
 }) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-    new Set([])
+    new Set(selectedLists.flat())
   );
+
   const [search, setSearch] = React.useState("");
+  const [page, setPage] = React.useState(0);
   const debouncedSearch = useDebounce(search, 500);
 
-  const filteredLists = React.useMemo(() => {
-    return demoLists.filter((list) =>
-      list.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [debouncedSearch]);
+  const { data, isLoading, error } = useGetLists({
+    page: page,
+    pageSize: 20,
+    search: debouncedSearch,
+    enabled: isOpen,
+  });
+
+  const lists = data?.data || [];
+  const totalPages = data?.totalPages || 1;
 
   return (
     <Modal
@@ -58,27 +68,50 @@ const ListModal: React.FC<listModelProps> = ({
               Select Lists
             </ModalHeader>
             <ModalBody>
-              <Input
-                isClearable
-                className="mb-2"
-                placeholder="Search lists..."
-                value={search}
-                onValueChange={setSearch}
-              />
-              <Listbox
-                aria-label="Profile selection"
-                classNames={{
-                  base: "w-full",
-                  list: "max-h-[250px] overflow-scroll",
-                }}
-                selectedKeys={selectedKeys}
-                selectionMode="multiple"
-                variant="flat"
-                items={filteredLists}
-                onSelectionChange={setSelectedKeys}
-              >
-                {(item) => <ListboxItem key={item.id}>{item.name}</ListboxItem>}
-              </Listbox>
+              {error ? (
+                <div className="text-center text-red-400">
+                  {error.message || "something went wrong!"}
+                </div>
+              ) : isLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <Spinner />
+                </div>
+              ) : (
+                <>
+                  <Input
+                    isClearable
+                    className="mb-2"
+                    placeholder="Search lists..."
+                    value={search}
+                    onValueChange={setSearch}
+                  />
+                  <Listbox
+                    aria-label="Profile selection"
+                    classNames={{
+                      base: "w-full",
+                      list: "max-h-[250px] overflow-scroll",
+                    }}
+                    selectedKeys={selectedKeys}
+                    selectionMode="multiple"
+                    variant="flat"
+                    items={lists}
+                    onSelectionChange={setSelectedKeys}
+                  >
+                    {(item) => (
+                      <ListboxItem key={item.id}>{item.name}</ListboxItem>
+                    )}
+                  </Listbox>
+                  <Pagination
+                    showControls
+                    className="flex justify-center items-center mt-2"
+                    initialPage={1}
+                    page={page}
+                    size="sm"
+                    total={totalPages}
+                    onChange={setPage}
+                  />
+                </>
+              )}
             </ModalBody>
             <ModalFooter>
               {Array.from(selectedKeys).length > 0 && (

@@ -1,4 +1,4 @@
-import type { Selection } from "@react-types/shared";
+import type { Key, Selection } from "@react-types/shared";
 
 import {
   Button,
@@ -10,36 +10,45 @@ import {
   Listbox,
   ListboxItem,
   Input,
+  Pagination,
+  Spinner,
 } from "@heroui/react";
 import React from "react";
 
 import { useDebounce } from "@/hooks/useDebounce";
-import { demoProfiles } from "@/utils/data.json";
 import { profileFilter } from "@/types";
+import { useGetProfiles } from "@/hooks/useProfiles";
 
 interface ProfileModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
   setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
+  selectedProfiles: Key[];
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({
   isOpen,
   onOpenChange,
   setFilter,
+  selectedProfiles,
 }) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-    new Set([])
+    new Set(selectedProfiles.flat())
   );
 
   const [search, setSearch] = React.useState("");
+  const [page, setPage] = React.useState(0);
   const debouncedSearch = useDebounce(search, 500);
 
-  const filteredProfiles = React.useMemo(() => {
-    return demoProfiles.filter((profile) =>
-      profile.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [debouncedSearch]);
+  const { data, isLoading, error } = useGetProfiles({
+    page: page,
+    pageSize: 20,
+    search: debouncedSearch,
+    enabled: isOpen,
+  });
+
+  const profiles = data?.data || [];
+  const totalPages = data?.totalPages || 1;
 
   return (
     <Modal
@@ -66,20 +75,43 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                 value={search}
                 onValueChange={setSearch}
               />
-              <Listbox
-                aria-label="Profile selection"
-                classNames={{
-                  base: "w-full",
-                  list: "max-h-[250px] overflow-scroll",
-                }}
-                selectedKeys={selectedKeys}
-                selectionMode="multiple"
-                variant="flat"
-                items={filteredProfiles}
-                onSelectionChange={setSelectedKeys}
-              >
-                {(item) => <ListboxItem key={item.id}>{item.name}</ListboxItem>}
-              </Listbox>
+              {error ? (
+                <div className="text-center text-red-400">
+                  {error.message || "something went wrong!"}
+                </div>
+              ) : isLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <Spinner />
+                </div>
+              ) : (
+                <>
+                  <Listbox
+                    aria-label="Profile selection"
+                    classNames={{
+                      base: "w-full",
+                      list: "max-h-[250px] overflow-scroll",
+                    }}
+                    selectedKeys={selectedKeys}
+                    selectionMode="multiple"
+                    variant="flat"
+                    items={profiles}
+                    onSelectionChange={setSelectedKeys}
+                  >
+                    {(item) => (
+                      <ListboxItem key={item.id}>{item.name}</ListboxItem>
+                    )}
+                  </Listbox>
+                  <Pagination
+                    showControls
+                    className="flex justify-center items-center mt-2"
+                    initialPage={1}
+                    page={page}
+                    size="sm"
+                    total={totalPages}
+                    onChange={setPage}
+                  />
+                </>
+              )}
             </ModalBody>
             <ModalFooter>
               {Array.from(selectedKeys).length > 0 && (

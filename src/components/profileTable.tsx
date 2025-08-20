@@ -11,7 +11,7 @@ import {
   Pagination,
 } from "@heroui/react";
 
-import { demoLists, demoProfiles as allProfiles } from "@/utils/data.json";
+import { participant } from "@/types";
 interface CheckHistory {
   id: string;
   name: string;
@@ -21,57 +21,36 @@ interface CheckHistory {
 }
 
 interface profileTableProps {
-  profiles: Key[];
+  participants: participant[];
 }
 
-const ProfileTable: React.FC<profileTableProps> = ({ profiles }) => {
+const ProfileTable: React.FC<profileTableProps> = ({ participants }) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 
   const checkHistoryData = React.useMemo(() => {
-    const profileIds =
-      profiles.length === 0
-        ? allProfiles.map((p) => p.id.toString())
-        : profiles.map((p) => p.toString());
+    const seen = new Set<string>();
 
-    return profileIds.map((profileId) => {
-      // Find profile info
-      const profileInfo = allProfiles.find(
-        (p) => p.id.toString() === profileId.toString()
-      );
+    return participants
+      .filter((p) => p.checkedIn)
+      .map((p) => ({
+        id: p.id.toString(),
+        name: p.name || `Participant ${p.id}`,
+        listName: p.listName || "-",
+        latestCheckIn: p.checkedIn
+          ? new Date(p.checkInDate * 1000).toISOString()
+          : null,
+        latestCheckOut: p.checkedOut
+          ? new Date(p.checkOutDate * 1000).toISOString()
+          : null,
+      }))
+      .filter((item) => {
+        if (seen.has(item.id)) return false;
+        seen.add(item.id);
 
-      // Find all lists containing this profile
-      const listsWithProfile = demoLists
-        .filter((list) =>
-          list.profiles.some(
-            (p) => p.profileId.toString() === profileId.toString()
-          )
-        )
-        .sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
-
-      // Most recent list
-      const recentList = listsWithProfile[0];
-      // Profile data in that list
-      const profileData =
-        recentList &&
-        recentList.profiles.find(
-          (p) => p.profileId.toString() === profileId.toString()
-        );
-
-      return {
-        id: profileId.toString(),
-        name: profileInfo ? profileInfo.name : `Profile ${profileId}`,
-        listName: recentList ? recentList.name : "-",
-        latestCheckIn: profileData?.checkIn ?? null,
-        latestCheckOut:
-          profileData && typeof (profileData as any).checkOut === "string"
-            ? (profileData as any).checkOut
-            : null,
-      };
-    });
-  }, [profiles, demoLists]);
+        return true;
+      });
+  }, [participants]);
 
   const pages = Math.ceil(checkHistoryData.length / rowsPerPage);
 

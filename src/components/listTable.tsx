@@ -15,30 +15,76 @@ import {
 import { EyeIcon } from "./icons";
 import ListDetails from "./modal/listDetails";
 
-import { typeLists } from "@/types";
+import { participant } from "@/types";
 
 interface listTableProps {
-  lists: typeLists[];
+  participants: participant[];
 }
-interface listHistory extends typeLists {
+interface listHistory {
+  id: string;
+  name: string;
+  date: number;
   totalCheckIn: number;
   totalProfiles: number;
   totalCheckOut: number | null;
 }
 
-const ListTable: React.FC<listTableProps> = ({ lists }) => {
+const ListTable: React.FC<listTableProps> = ({ participants }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [page, setPage] = useState(1);
-  const [selectedListId, setSelectedListId] = useState(1);
+  const [selectedListId, setSelectedListId] = useState("");
   const rowsPerPage = 5;
+
   const listHistoryData: listHistory[] = React.useMemo(() => {
-    return lists.map((list) => ({
-      ...list,
-      totalProfiles: list.profiles.length,
-      totalCheckIn: list.profiles.filter((p) => !!p.checkIn).length,
-      totalCheckOut: list.profiles.filter((p) => !!(p as any)?.checkOut).length,
+    const listMap = new Map<
+      string,
+      {
+        id: string;
+        name: string;
+        date: number;
+        profiles: Set<string>;
+        totalCheckIn: number;
+        totalCheckOut: number;
+      }
+    >();
+
+    participants.forEach((p) => {
+      if (!listMap.has(p.listId)) {
+        listMap.set(p.listId, {
+          id: p.listId,
+          name: p.listName,
+          date: p.checkInDate,
+          profiles: new Set(),
+          totalCheckIn: 0,
+          totalCheckOut: 0,
+        });
+      }
+      const entry = listMap.get(p.listId)!;
+
+      if (!entry.profiles.has(p.profileId)) {
+        entry.profiles.add(p.profileId);
+      }
+      if (p.checkedIn) {
+        entry.totalCheckIn += 1;
+      }
+      if (p.checkedOut) {
+        entry.totalCheckOut += 1;
+      }
+      // Use the latest checkInDate as the list date
+      if (p.checkInDate > entry.date) {
+        entry.date = p.checkInDate;
+      }
+    });
+
+    return Array.from(listMap.values()).map((entry) => ({
+      id: entry.id,
+      name: entry.name,
+      date: entry.date,
+      totalProfiles: entry.profiles.size,
+      totalCheckIn: entry.totalCheckIn,
+      totalCheckOut: entry.totalCheckOut,
     }));
-  }, [lists]);
+  }, [participants]);
 
   const pages = Math.ceil(listHistoryData.length / rowsPerPage);
 

@@ -24,14 +24,14 @@ export function getDays(
   return days;
 }
 
-export function formatDateTime(dt: string | null | undefined) {
+export function formatDateTime(dt: string | number | null | undefined) {
   if (!dt) return "-";
   const date = new Date(dt);
 
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 }
 
-export function getElapsedTime(start: string, end: string) {
+export function getElapsedTime(start: string | number, end: string | number) {
   const startDate = new Date(start);
   const endDate = new Date(end);
   const diffMs = endDate.getTime() - startDate.getTime();

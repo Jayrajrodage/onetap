@@ -7,9 +7,13 @@ import { profileFilter } from "@/types";
 
 interface profileFilterProps {
   setFilter: React.Dispatch<React.SetStateAction<profileFilter>>;
+  filter: profileFilter;
 }
 
-export default function ProfileFilter({ setFilter }: profileFilterProps) {
+export default function ProfileFilter({
+  setFilter,
+  filter,
+}: profileFilterProps) {
   const {
     isOpen: isOpenProfile,
     onOpen: onOpenProfile,
@@ -38,10 +42,12 @@ export default function ProfileFilter({ setFilter }: profileFilterProps) {
       </div>
       <ProfileModal
         isOpen={isOpenProfile}
+        selectedProfiles={filter.profiles}
         setFilter={setFilter}
         onOpenChange={onOpenChangeProfile}
       />
       <DateRangeModel
+        filter={filter}
         isOpen={isOpenDate}
         setFilter={setFilter}
         onOpenChange={onOpenChangeDate}

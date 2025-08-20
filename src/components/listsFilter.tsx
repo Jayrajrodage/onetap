@@ -7,9 +7,10 @@ import { listsFilter } from "@/types";
 
 interface listsFilterProps {
   setFilter: React.Dispatch<React.SetStateAction<listsFilter>>;
+  filter: listsFilter;
 }
 
-export default function ListsFilter({ setFilter }: listsFilterProps) {
+export default function ListsFilter({ setFilter, filter }: listsFilterProps) {
   const {
     isOpen: isOpenLists,
     onOpen: onOpenLists,
@@ -38,10 +39,12 @@ export default function ListsFilter({ setFilter }: listsFilterProps) {
       </div>
       <ListModal
         isOpen={isOpenLists}
+        selectedLists={filter.lists}
         setFilter={setFilter}
         onOpenChange={onOpenChangeLists}
       />
       <DateRangeModel
+        filter={filter}
         isOpen={isOpenDate}
         setFilter={setFilter}
         onOpenChange={onOpenChangeDate}

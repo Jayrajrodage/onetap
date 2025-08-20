@@ -10,26 +10,54 @@ import {
   Bar,
 } from "recharts";
 
-import { typeLists } from "@/types";
+import { participant } from "@/types";
 
 interface ListChartsProps {
-  lists: typeLists[];
+  participantsData: participant[]; // Adjust type as needed
 }
 
-const ListCharts: React.FC<ListChartsProps> = ({ lists }) => {
+const ListCharts: React.FC<ListChartsProps> = ({ participantsData }) => {
   const barData = useMemo(() => {
-    // Take the last 5 lists (most recent by date)
-    const sortedLists = [...lists].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    // Group by listId
+    const listMap: Record<
+      string,
+      {
+        name: string;
+        profiles: Set<string>;
+        checkIns: number;
+        checkOuts: number;
+        date: number;
+      }
+    > = {};
 
-    return sortedLists.slice(0, 7).map((list) => ({
+    participantsData.forEach((p) => {
+      if (!listMap[p.listId]) {
+        listMap[p.listId] = {
+          name: p.listName,
+          profiles: new Set(),
+          checkIns: 0,
+          checkOuts: 0,
+          date: p.checkInDate || 0,
+        };
+      }
+
+      listMap[p.listId].profiles.add(p.profileId);
+      if (p.checkedIn) listMap[p.listId].checkIns += 1;
+      if (p.checkedOut) listMap[p.listId].checkOuts += 1;
+      // Use the latest checkInDate as the list date
+      if (p.checkInDate > listMap[p.listId].date) {
+        listMap[p.listId].date = p.checkInDate;
+      }
+    });
+    const listsArr = Object.values(listMap).sort((a, b) => b.date - a.date);
+
+    return listsArr.slice(0, 7).map((list) => ({
       name: list.name,
-      profiles: list.profiles.length,
-      checkIns: list.profiles.filter((p) => p.checkIn).length,
-      checkOuts: list.profiles.filter((p) => p.checkOut).length,
+      profiles: list.profiles.size,
+      checkIns: list.checkIns,
+      checkOuts: list.checkOuts,
     }));
-  }, [lists]);
+  }, [participantsData]);
 
   return (
     <div className="w-full">
