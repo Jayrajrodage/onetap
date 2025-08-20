@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Key } from "@react-types/shared";
 import {
   TableHeader,
   TableColumn,
