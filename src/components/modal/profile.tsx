@@ -53,6 +53,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   return (
     <Modal
       isOpen={isOpen}
+      placement="center"
       onClose={() =>
         setFilter((prev) => ({
           ...prev,

@@ -37,6 +37,7 @@ const DateRangeModel: React.FC<DateRangeModalProps> = ({
   return (
     <Modal
       isOpen={isOpen}
+      placement="center"
       onClose={() =>
         setFilter((prev: any) => ({
           ...prev,

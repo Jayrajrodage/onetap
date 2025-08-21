@@ -107,6 +107,7 @@ export default function ListDetails({
     <Modal
       hideCloseButton
       isOpen={isOpen}
+      placement="center"
       size="4xl"
       onOpenChange={onOpenChange}
     >

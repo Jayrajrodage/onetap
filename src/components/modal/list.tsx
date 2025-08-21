@@ -53,6 +53,7 @@ const ListModal: React.FC<listModelProps> = ({
   return (
     <Modal
       isOpen={isOpen}
+      placement="center"
       onClose={() =>
         setFilter((prev) => ({
           ...prev,
