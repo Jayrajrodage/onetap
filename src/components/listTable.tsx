@@ -99,13 +99,11 @@ const ListTable: React.FC<listTableProps> = ({ participants }) => {
     (row: listHistory, columnKey: React.Key) => {
       switch (columnKey) {
         case "name":
-          return <div className="text-base font-medium">{row.name}</div>;
+          return <div className="text-sm font-medium">{row.name}</div>;
 
         case "date":
           return (
-            <div className="text-base">
-              {new Date(row.date).toLocaleString()}
-            </div>
+            <div className="text-sm">{new Date(row.date).toLocaleString()}</div>
           );
 
         case "totalProfiles":
@@ -174,7 +172,7 @@ const ListTable: React.FC<listTableProps> = ({ participants }) => {
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          th: ["bg-transparent", "border-b", "border-divider", "text-base"],
+          th: ["text-base"],
         }}
       >
         <TableHeader columns={columns}>
@@ -190,7 +188,9 @@ const ListTable: React.FC<listTableProps> = ({ participants }) => {
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell className="py-2 px-4">
+                  {renderCell(item, columnKey)}
+                </TableCell>
               )}
             </TableRow>
           )}

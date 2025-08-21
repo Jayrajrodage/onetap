@@ -64,10 +64,10 @@ const ProfileTable: React.FC<profileTableProps> = ({ participants }) => {
     (row: CheckHistory, columnKey: React.Key) => {
       switch (columnKey) {
         case "name":
-          return <div className="text-base font-medium">{row.name}</div>;
+          return <div className="text-sm font-medium">{row.name}</div>;
 
         case "listName":
-          return <div className="text-base">{row.listName}</div>;
+          return <div className="text-sm">{row.listName}</div>;
 
         case "latestCheckIn":
           return (
@@ -125,7 +125,7 @@ const ProfileTable: React.FC<profileTableProps> = ({ participants }) => {
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        th: ["bg-transparent", "border-b", "border-divider", "text-base"],
+        th: ["text-base"],
       }}
     >
       <TableHeader columns={columns}>
@@ -139,7 +139,9 @@ const ProfileTable: React.FC<profileTableProps> = ({ participants }) => {
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell className="py-2 px-4">
+                {renderCell(item, columnKey)}
+              </TableCell>
             )}
           </TableRow>
         )}

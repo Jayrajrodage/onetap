@@ -48,7 +48,10 @@ const Lists = () => {
             {participantsFetched && (
               <>
                 <ListsFilter filter={filter} setFilter={setFilter} />
-                <ListsCards participants={participantsData.data} />
+                <ListsCards
+                  filter={filter}
+                  participants={participantsData.data}
+                />
                 <ListCharts participantsData={participantsData.data} />
                 <ListTable participants={participantsData.data} />
               </>
