@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Spinner } from "@heroui/react";
 
@@ -33,6 +33,8 @@ const Lists = () => {
       (filter.dateRange?.start.toDate(getLocalTimeZone()).getTime() ?? 0) / 1000
     ),
   });
+
+  useEffect(() => {}, []);
 
   return (
     <DefaultLayout>
